@@ -18,18 +18,18 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/products")
+@RequestMapping("${api.prefix}")
 public class ProductController {
     private final IProductService productService;
 
-    @GetMapping("/all")
+    @GetMapping("/products")
     public ResponseEntity<ApiResponse> getAllProducts() {
         List<Product> products = productService.getAllProducts();
         List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
         return  ResponseEntity.ok(new ApiResponse("success", convertedProducts));
     }
 
-    @GetMapping("product/{productId}/product")
+    @GetMapping("/products/{productId}")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable Long productId) {
         try {
             Product product = productService.getProductById(productId);
@@ -40,7 +40,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/add")
+    @PostMapping("/products")
     public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequest product) {
         try {
             Product theProduct = productService.addProduct(product);
@@ -51,7 +51,7 @@ public class ProductController {
         }
     }
 
-    @PutMapping("/product/{productId}/update")
+    @PutMapping("/products/{productId}")
     public  ResponseEntity<ApiResponse> updateProduct(@RequestBody ProductUpdateRequest request, @PathVariable Long productId) {
         try {
             Product theProduct = productService.updateProduct(request, productId);
@@ -62,7 +62,7 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/product/{productId}/delete")
+    @DeleteMapping("/products/{productId}")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId) {
         try {
             productService.deleteProductById(productId);
@@ -72,8 +72,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/products/by/brand-and-name")
-    public ResponseEntity<ApiResponse> getProductByBrandAndName(@RequestParam String brandName, @RequestParam String productName) {
+    @GetMapping("/products/{productName}/{brandName}")
+    public ResponseEntity<ApiResponse> getProductByBrandAndName(@PathVariable String brandName, @PathVariable String productName) {
         try {
             List<Product> products = productService.getProductsByBrandAndName(brandName, productName);
             if (products.isEmpty()) {
@@ -86,8 +86,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/products/by/category-and-brand")
-    public ResponseEntity<ApiResponse> getProductByCategoryAndBrand(@RequestParam String category, @RequestParam String brand){
+    @GetMapping("/products/{category}/{brand}")
+    public ResponseEntity<ApiResponse> getProductByCategoryAndBrand(@PathVariable String category, @PathVariable String brand){
         try {
             List<Product> products = productService.getProductsByCategoryAndBrand(category, brand);
             if (products.isEmpty()) {
@@ -100,7 +100,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/products/{name}/products")
+    @GetMapping("/products/{name}")
     public ResponseEntity<ApiResponse> getProductByName(@PathVariable String name){
         try {
             List<Product> products = productService.getProductsByName(name);
@@ -114,8 +114,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/product/by-brand")
-    public ResponseEntity<ApiResponse> findProductByBrand(@RequestParam String brand) {
+    @GetMapping("/products/{brand}")
+    public ResponseEntity<ApiResponse> findProductByBrand(@PathVariable String brand) {
         try {
             List<Product> products = productService.getProductsByBrand(brand);
             if (products.isEmpty()) {
@@ -128,7 +128,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/product/{category}/all/products")
+    @GetMapping("/products/{category}")
     public ResponseEntity<ApiResponse> findProductByCategory(@PathVariable String category) {
         try {
             List<Product> products = productService.getProductsByCategory(category);
@@ -142,7 +142,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/product/count/by-brand/and-name")
+    @GetMapping("/products/count")
     public ResponseEntity<ApiResponse> countProductsByBrandAndName(@RequestParam String brand, @RequestParam String name) {
         try {
             var productCount = productService.countProductsByBrandAndName(brand, name);

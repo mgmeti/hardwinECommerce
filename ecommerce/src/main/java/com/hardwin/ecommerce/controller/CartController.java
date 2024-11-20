@@ -14,37 +14,26 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/carts")
+@RequestMapping("${api.prefix}")
 public class CartController {
     private final ICartService cartService;
 
-    @GetMapping("/{cartId}/cart")
+    @GetMapping("/cart/{cartId}")
     public ResponseEntity<ApiResponse> getCart(@PathVariable Long cartId){
-        try{
             Cart cart = cartService.getCart(cartId);
             return ResponseEntity.ok(new ApiResponse("Success", cart));
-        }catch (ResourceNotFoundException rnfe){
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(rnfe.getMessage(), null));
-        }
+
     }
 
-    @GetMapping("/{cartId}/cart/amount")
+    @GetMapping("/cart/{cartId}/amount")
     public ResponseEntity<ApiResponse> getTotalAmount(@PathVariable Long cartId){
-        try{
             BigDecimal totalAmount = cartService.getTotalPrice(cartId);
             return ResponseEntity.ok(new ApiResponse("Success", totalAmount));
-        }catch (ResourceNotFoundException rnfe){
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(rnfe.getMessage(), null));
-        }
     }
 
-    @DeleteMapping("/{cartId}/cart")
+    @DeleteMapping("/cart/{cartId}")
     public ResponseEntity<ApiResponse> clearCart(@PathVariable Long cartId){
-        try{
             cartService.clearCart(cartId);
             return ResponseEntity.ok(new ApiResponse("Clear cart success", null));
-        }catch (ResourceNotFoundException rnfe){
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(rnfe.getMessage(), null));
-        }
     }
 }
